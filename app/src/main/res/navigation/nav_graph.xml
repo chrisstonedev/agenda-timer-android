@@ -25,7 +25,12 @@
             android:id="@+id/action_SecondFragment_to_FirstFragment"
             app:destination="@id/FirstFragment" />
         <argument
-            android:name="myArg"
+            android:name="itemCount"
+            app:argType="integer" />
+        <argument android:name="deadlineHour"
+            app:argType="integer" />
+        <argument
+            android:name="deadlineMinute"
             app:argType="integer" />
     </fragment>
 </navigation>
