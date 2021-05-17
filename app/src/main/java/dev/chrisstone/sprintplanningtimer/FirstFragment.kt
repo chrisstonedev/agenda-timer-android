@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.navigation.fragment.findNavController
+import kotlinx.android.synthetic.main.fragment_first.*
+import java.util.*
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -24,6 +26,27 @@ class FirstFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val deadlineView = view.findViewById<TimePicker>(R.id.timePicker_deadline)
+        val hour = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            deadlineView.hour
+        } else {
+            deadlineView.currentHour
+        }
+        if (hour == 23) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                deadlineView.minute = 59
+            } else {
+                deadlineView.currentMinute = 59
+            }
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                deadlineView.hour++
+            } else {
+                deadlineView.currentHour++
+            }
+        }
+
 
         view.findViewById<Button>(R.id.button_start).setOnClickListener {
             val showCountTextView = view.findViewById<EditText>(R.id.editText_item_count)
@@ -43,8 +66,29 @@ class FirstFragment : Fragment() {
                 deadlineView.currentMinute
             }
 
-            val action = FirstFragmentDirections.actionFirstFragmentToSecondFragment(currentCount, hour, minute)
-            findNavController().navigate(action)
+            val inFuture = millisecondsRemaining(hour, minute) > 0
+
+            if (inFuture) {
+
+                val action = FirstFragmentDirections.actionFirstFragmentToSecondFragment(
+                    currentCount,
+                    hour,
+                    minute
+                )
+                findNavController().navigate(action)
+            } else {
+                Toast.makeText(activity, "I am a toast message", Toast.LENGTH_LONG).show()
+            }
         }
+    }
+
+    private fun millisecondsRemaining(hour: Int, minute: Int): Long {
+        val rightNow = Calendar.getInstance()
+        val currentHour = rightNow[Calendar.HOUR_OF_DAY]
+        val currentMinute = rightNow[Calendar.MINUTE]
+        val currentSecond = rightNow[Calendar.SECOND]
+        val currentTime = currentHour * 3600 + currentMinute * 60 + currentSecond
+        val deadlineTime = hour * 3600 + minute * 60
+        return (deadlineTime - currentTime).toLong() * 1000
     }
 }

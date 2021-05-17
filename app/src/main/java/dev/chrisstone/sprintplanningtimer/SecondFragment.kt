@@ -1,5 +1,6 @@
 package dev.chrisstone.sprintplanningtimer
 
+import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.format.DateFormat
@@ -50,7 +51,7 @@ class SecondFragment : Fragment() {
         }
 
         view.findViewById<Button>(R.id.button_start_over).setOnClickListener {
-            findNavController().navigate(R.id.action_SecondFragment_to_FirstFragment)
+            activity?.onBackPressed()
         }
 
         itemsRemaining = args.itemCount
@@ -110,24 +111,30 @@ class SecondFragment : Fragment() {
     }
 
     private fun startTotalTimer(millisInFuture: Long) {
+        totalTimeTextView!!.setTextColor(Color.WHITE)
         totalCountDownTimer = object : CountDownTimer(millisInFuture, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 totalTimeTextView!!.text = getTimerText(millisUntilFinished)
             }
             override fun onFinish() {
                 totalTimeTextView!!.text = getString(R.string.time_format, 0, 0, 0)
+                totalTimeTextView!!.setTextColor(Color.RED)
             }
         }
         totalCountDownTimer!!.start()
     }
 
     private fun startItemTimer(millisInFuture: Long) {
+        itemTimeTextView!!.setTextColor(Color.WHITE)
         itemCountDownTimer = object : CountDownTimer(millisInFuture, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 itemTimeTextView!!.text = getTimerText(millisUntilFinished)
             }
             override fun onFinish() {
-                itemTimeTextView!!.text = getString(R.string.time_format, 0, 0, 0)
+                try {
+                    itemTimeTextView!!.text = getString(R.string.time_format, 0, 0, 0)
+                    itemTimeTextView!!.setTextColor(Color.RED)
+                } catch (e: IllegalStateException) { }
             }
         }
         itemCountDownTimer!!.start()
@@ -138,7 +145,11 @@ class SecondFragment : Fragment() {
         val hours = totalSeconds / 60 / 60
         val minutes = totalSeconds / 60 - hours * 60
         val seconds = totalSeconds - hours * 3600 - minutes * 60
-        return getString(R.string.time_format, hours, minutes, seconds)
+        try {
+            return getString(R.string.time_format, hours, minutes, seconds)
+        } catch (e: IllegalStateException) {
+            return ""
+        }
     }
 
     private fun cancelTotalTimer() {
