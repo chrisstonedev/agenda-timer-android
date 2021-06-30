@@ -1,4 +1,4 @@
-package dev.chrisstone.sprintplanningtimer
+package dev.chrisstone.agendatimer
 
 import android.graphics.Color
 import android.os.Bundle
@@ -11,7 +11,6 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import java.util.*
 
@@ -98,7 +97,8 @@ class SecondFragment : Fragment() {
         cancelItemTimer()
         if (itemsRemaining == 0) {
             cancelTotalTimer()
-            Toast.makeText(context, getString(R.string.tasks_complete_toast), Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, getString(R.string.tasks_complete_toast), Toast.LENGTH_LONG).show()
+            activity?.onBackPressed()
             return
         }
 
@@ -106,7 +106,7 @@ class SecondFragment : Fragment() {
     }
 
     private fun updateHeaderText() {
-        val countText = getString(R.string.countdown_header_text, itemsRemaining, deadlineText)
+        val countText = resources.getQuantityString(R.plurals.countdown_header_text, itemsRemaining, itemsRemaining, deadlineText)
         headerText!!.text = countText
     }
 
@@ -145,10 +145,10 @@ class SecondFragment : Fragment() {
         val hours = totalSeconds / 60 / 60
         val minutes = totalSeconds / 60 - hours * 60
         val seconds = totalSeconds - hours * 3600 - minutes * 60
-        try {
-            return getString(R.string.time_format, hours, minutes, seconds)
+        return try {
+            getString(R.string.time_format, hours, minutes, seconds)
         } catch (e: IllegalStateException) {
-            return ""
+            ""
         }
     }
 

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Sprint Planning Timer</string>
+    <string name="app_name">Agenda Timer</string>
     <string name="action_settings">Settings</string>
 
     <!-- Strings used for fragments for navigation -->
@@ -7,7 +7,10 @@
     <string name="second_fragment_label">Second Fragment</string>
 
     <string name="text_item_count">Open items to plan:</string>
-    <string name="countdown_header_text">We have %d open items\nto address by %s.</string>
+    <plurals name="countdown_header_text">
+        <item quantity="one">We have %d open item\nto address by %s.</item>
+        <item quantity="other">We have %d open items\nto address by %s.</item>
+    </plurals>
     <string name="button_text_start">Start</string>
     <string name="tasks_complete_toast">Congratulations! You have finished all tasks!</string>
     <string name="button_start_over">Start Over</string>

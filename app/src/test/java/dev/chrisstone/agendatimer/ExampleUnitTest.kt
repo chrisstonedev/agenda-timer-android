@@ -1,4 +1,4 @@
-package dev.chrisstone.sprintplanningtimer
+package dev.chrisstone.agendatimer
 
 import org.junit.Test
 
